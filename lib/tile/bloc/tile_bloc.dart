@@ -64,6 +64,9 @@ class TileBloc extends Bloc<TileEvent, TileState> {
       DeleteDashboard event, Emitter<TileState> emit) async {
     await _userRepository.deleteDashboard(
         domain: state.domain, id: event.dashboardId);
+    final dashboards = List<Dashboard>.from(state.dashboards);
+    dashboards.removeWhere((element) => element.id == event.dashboardId);
+    emit(state.copyWith(dashboards: dashboards));
     if (state.dashboards.isNotEmpty) {
       add(DashboardIdChanged(dashboardId: state.dashboards.first.id));
     }
